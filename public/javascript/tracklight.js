@@ -1,4 +1,8 @@
 $(document).ready(function() {
+  $("#queue,#icebox").sortable({
+    connectWith: ["#queue", "#icebox"]
+  });
+
   fetchTickets();
 });
 
