@@ -1,6 +1,10 @@
-.ticket_list {
+.list {
   cursor: move;
   background-color: #fffc65;
   padding-bottom:1em;
   padding-top:1em;
+}
+
+.ticket.loading {
+  font-style: italic;
 }
