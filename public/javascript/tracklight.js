@@ -1,24 +1,22 @@
 $(document).ready(function() {
-  // function createTicket(ticketInfo) {
-  //   return $("<li>"+ticketInfo.title+"</li>").attr({class: 'ticket', id: "ticket_"+ticketInfo.id});
-  // }
-  // 
-  // // Fetches all tickets starting with given page (by default, page 1).
-  // function fetchTickets(page) {
-  //   if (page == undefined) page = 1;
-  // 
-  //   getTicketsFromPage = arguments.callee
-  // 
-  //   $.getJSON("/tickets?page="+page, function(data) {
-  //     // Add the tickets to the Icebox.
-  //     $.each(data, function() {
-  //       $("#icebox").append(createTicket(this));
-  //     });
-  // 
-  //     // Fetch more.
-  //     if (data.length > 0) getTicketsFromPage(page+1);
-  //   });
-  // }
+  // Fetches all tickets starting with given page (by default, page 1).
+  function fetchUnknownTickets(page) {
+    if (page == undefined) page = 1;
+  
+    getTicketsFromPage = arguments.callee
+  
+    $.getJSON("/tickets?page="+page, function(data) {
+      // Add the tickets to the Icebox.
+      $.each(data, function(i, id) {
+        $("#ticket_"+id).oror(function() {
+          $("#icebox").append(createTicket(id));
+        });
+      });
+  
+      // Fetch more.
+      if (data.length > 0) getTicketsFromPage(page+1);
+    });
+  }
   
   // IMPLEMENT:
   function createTicket(id) {
@@ -57,10 +55,6 @@ $(document).ready(function() {
   });
   
   // Fetch lists
-  // Fetch tickets for lists
-  // Fetch all tickets and add extras to Icebox
-  
-  // Fetch lists
   $.getJSON("/lists", function(lists) {
     // Fetch tickets for lists
     $.each(lists, function(list, ticket_ids) {
@@ -68,5 +62,6 @@ $(document).ready(function() {
     })
   })
   
-  // fetchTickets();
+  // Fetch all tickets and add extras to Icebox
+  fetchUnknownTickets();
 });
