@@ -9,8 +9,8 @@ $(document).ready(function() {
       // Add the tickets to the Icebox.
       $.each(data, function(i, id) {
         $("#ticket_"+id).oror(function() {
-          $("#icebox").append(createTicket(id));
-        });
+          return createTicket(id).appendTo($("#icebox"));
+        }).fn('update');
       });
   
       // Fetch more.
@@ -18,9 +18,10 @@ $(document).ready(function() {
     });
   }
   
+  // Creates and returns a new, unloaded ticket.  Call #update to load.
   function createTicket(id) {
     var template = "<li><span class='title'>Loading...</span> <a class='link' href='#'>link</a></li>"
-    var ticket = $(template)
+    return $(template)
       .attr({id: "ticket_"+id, ticket_id: id, class: 'ticket loading'})
       .fn({
         update: function() {
@@ -28,12 +29,11 @@ $(document).ready(function() {
           $.getJSON("/tickets/"+self.attr("ticket_id"), function(ticket) {
             self.removeClass('loading');
             self.find(".title").text(ticket.title);
-            self.find(".link").attr({href: ticket.url})
+            self.find(".link").attr({href: ticket.url});
           });
+          return self;
         }
       });
-    ticket.fn('update');
-    return ticket;
   }
   
   $(".list").fn({
@@ -45,7 +45,7 @@ $(document).ready(function() {
       $.each(ticket_ids, function(i, id) {
         // Find or create ticket by id.
         var ticket = $("#ticket_"+id).oror(function() {
-          return createTicket(id);
+          return createTicket(id).fn('update');
         });
         
         // Insert in the correct place.
