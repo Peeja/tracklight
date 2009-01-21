@@ -5,6 +5,10 @@
   padding-top:1em;
 }
 
-.ticket.loading {
+.ticket.loading .title {
   font-style: italic;
+}
+
+.ticket.loading .link {
+  display: none;
 }

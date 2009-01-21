@@ -23,6 +23,10 @@ helpers do
   def write_list(name, list)
     write_lists load_lists.merge(name => list)
   end
+  
+  def ticket_url(ticket)
+    "http://#{Lighthouse.account}.lighthouseapp.com/projects/#{PROJECT_ID}/tickets/#{ticket.id}-#{ticket.permalink}"
+  end
 end
 
 get '/tickets' do
@@ -34,7 +38,8 @@ end
 get '/tickets/:id' do
   ticket = Lighthouse::Ticket.find(params[:id], :params => { :project_id => PROJECT_ID})
   { :id => ticket.id,
-    :title => ticket.title }.to_json
+    :title => ticket.title,
+    :url => ticket_url(ticket) }.to_json
 end
 
 get '/lists' do

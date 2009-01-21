@@ -19,14 +19,16 @@ $(document).ready(function() {
   }
   
   function createTicket(id) {
-    var ticket = $("<li>Loading...</li>")
+    var template = "<li><span class='title'>Loading...</span> <a class='link' href='#'>link</a></li>"
+    var ticket = $(template)
       .attr({id: "ticket_"+id, ticket_id: id, class: 'ticket loading'})
       .fn({
         update: function() {
           var self = $(this);
-          $.getJSON("/tickets/"+self.attr("ticket_id"), function(data) {
-            self.text(data.title);
+          $.getJSON("/tickets/"+self.attr("ticket_id"), function(ticket) {
             self.removeClass('loading');
+            self.find(".title").text(ticket.title);
+            self.find(".link").attr({href: ticket.url})
           });
         }
       });
