@@ -1,21 +1,22 @@
 $(document).ready(function() {
-  // Fetches all tickets starting with given page (by default, page 1).
-  function fetchUnknownTickets(page) {
-    if (page == undefined) page = 1;
-  
-    getTicketsFromPage = arguments.callee
-  
-    $.getJSON("/tickets?page="+page, function(data) {
-      // Add the tickets to the Icebox.
-      $.each(data, function(i, ticket_details) {
-        $("#ticket_"+ticket_details.id).oror(function() {
-          return createTicket(ticket_details.id).appendTo($("#icebox"));
-        }).fn('update', ticket_details);
+  // Fetches all tickets, page by page.  Updates tickets already
+  // in the DOM and adds new tickets to the Icebox.
+  function fetchTickets(page) {
+    function fetchTicketsFromPage(page) {
+      $.getJSON("/tickets?page="+page, function(data) {
+        // Add the tickets to the Icebox.
+        $.each(data, function(i, ticket_details) {
+          $("#ticket_"+ticket_details.id).oror(function() {
+            return createTicket(ticket_details.id).appendTo($("#icebox"));
+          }).fn('update', ticket_details);
+        });
+
+        // Fetch more.
+        if (data.length > 0) fetchTicketsFromPage(page+1);
       });
-  
-      // Fetch more.
-      if (data.length > 0) getTicketsFromPage(page+1);
-    });
+    }
+    
+    fetchTicketsFromPage(1);
   }
   
   // Creates and returns a new, unloaded ticket.  Call #update to load.
@@ -24,6 +25,7 @@ $(document).ready(function() {
     return $(template)
       .attr({id: "ticket_"+id, ticket_id: id, class: 'ticket loading'})
       .fn({
+        // If ticket_details is not given, details will be fetched.
         update: function(ticket_details) {
           var self = $(this);
           
@@ -52,7 +54,7 @@ $(document).ready(function() {
       $.each(ticket_ids, function(i, id) {
         // Find or create ticket by id.
         var ticket = $("#ticket_"+id).oror(function() {
-          return createTicket(id).fn('update');
+          return createTicket(id);
         });
         
         // Insert in the correct place.
@@ -82,5 +84,5 @@ $(document).ready(function() {
   })
   
   // Fetch all tickets and add extras to Icebox
-  fetchUnknownTickets();
+  fetchTickets();
 });
