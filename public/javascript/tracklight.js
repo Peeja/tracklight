@@ -18,10 +18,20 @@ $(document).ready(function() {
     });
   }
   
-  // IMPLEMENT:
   function createTicket(id) {
-    // return $("<li>Loading...</li>").attr({id: "ticket_"+id, class: 'ticket loading'});
-    return $("<li>#"+id+"</li>").attr({id: "ticket_"+id, class: 'ticket'});
+    var ticket = $("<li>Loading...</li>")
+      .attr({id: "ticket_"+id, ticket_id: id, class: 'ticket loading'})
+      .fn({
+        update: function() {
+          var self = $(this);
+          $.getJSON("/tickets/"+self.attr("ticket_id"), function(data) {
+            self.text(data.title);
+            self.removeClass('loading');
+          });
+        }
+      });
+    ticket.fn('update');
+    return ticket;
   }
   
   $(".list").fn({
@@ -29,22 +39,22 @@ $(document).ready(function() {
     // After update, the list has exactly those tickets whose ids are given,
     // and in the given order.
     update: function(ticket_ids) {
-      self = this;
+      var self = $(this);
       $.each(ticket_ids, function(i, id) {
         // Find or create ticket by id.
-        ticket = $("#ticket_"+id).oror(function() {
+        var ticket = $("#ticket_"+id).oror(function() {
           return createTicket(id);
         });
         
         // Insert in the correct place.
         if (i == 0) { ticket.prependTo(self); }
-        else        { ticket.insertAfter($(self).find(".ticket:eq("+(i-1)+")")[0]); }
+        else        { ticket.insertAfter(self.find(".ticket:eq("+(i-1)+")")[0]); }
       });
       // Remove any extra tickets.
-      $(self).find(".ticket:gt("+(ticket_ids.length-1)+")").remove();
+      self.find(".ticket:gt("+(ticket_ids.length-1)+")").remove();
     },
     save: function() {
-      ticket_ids = $(this).sortable("serialize")
+      var ticket_ids = $(this).sortable("serialize")
       $.post('/lists/'+$(this).attr('id'), ticket_ids);
     }
   }).sortable({

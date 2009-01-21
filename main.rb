@@ -31,6 +31,12 @@ get '/tickets' do
   tickets.map(&:id).to_json
 end
 
+get '/tickets/:id' do
+  ticket = Lighthouse::Ticket.find(params[:id], :params => { :project_id => PROJECT_ID})
+  { :id => ticket.id,
+    :title => ticket.title }.to_json
+end
+
 get '/lists' do
   load_lists.to_json
 end
