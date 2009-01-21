@@ -7,10 +7,10 @@ $(document).ready(function() {
   
     $.getJSON("/tickets?page="+page, function(data) {
       // Add the tickets to the Icebox.
-      $.each(data, function(i, id) {
-        $("#ticket_"+id).oror(function() {
-          return createTicket(id).appendTo($("#icebox"));
-        }).fn('update');
+      $.each(data, function(i, ticket_details) {
+        $("#ticket_"+ticket_details.id).oror(function() {
+          return createTicket(ticket_details.id).appendTo($("#icebox"));
+        }).fn('update', ticket_details);
       });
   
       // Fetch more.
@@ -24,13 +24,20 @@ $(document).ready(function() {
     return $(template)
       .attr({id: "ticket_"+id, ticket_id: id, class: 'ticket loading'})
       .fn({
-        update: function() {
+        update: function(ticket_details) {
           var self = $(this);
-          $.getJSON("/tickets/"+self.attr("ticket_id"), function(ticket) {
+          
+          function updateWithDetails(ticket_details) {
             self.removeClass('loading');
-            self.find(".title").text(ticket.title);
-            self.find(".link").attr({href: ticket.url});
-          });
+            self.find(".title").text(ticket_details.title);
+            self.find(".link").attr({href: ticket_details.url});
+          }
+          
+          if (ticket_details != undefined)
+            updateWithDetails(ticket_details);
+          else
+            $.getJSON("/tickets/"+self.attr("ticket_id"), updateWithDetails);
+          
           return self;
         }
       });

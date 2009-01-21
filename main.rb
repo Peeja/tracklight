@@ -27,19 +27,22 @@ helpers do
   def ticket_url(ticket)
     "http://#{Lighthouse.account}.lighthouseapp.com/projects/#{PROJECT_ID}/tickets/#{ticket.id}-#{ticket.permalink}"
   end
+  
+  def ticket_details(ticket)
+    { :id => ticket.id,
+      :title => ticket.title,
+      :url => ticket_url(ticket) }
+  end
 end
 
 get '/tickets' do
   page = params[:page] || 1
   tickets = Lighthouse::Ticket.find(:all, :params => { :project_id => PROJECT_ID, :q => "responsible:me", :page => page })
-  tickets.map(&:id).to_json
+  tickets.map {|t| ticket_details(t) }.to_json
 end
 
 get '/tickets/:id' do
-  ticket = Lighthouse::Ticket.find(params[:id], :params => { :project_id => PROJECT_ID})
-  { :id => ticket.id,
-    :title => ticket.title,
-    :url => ticket_url(ticket) }.to_json
+  ticket_details(Lighthouse::Ticket.find(params[:id], :params => { :project_id => PROJECT_ID})).to_json
 end
 
 get '/lists' do
