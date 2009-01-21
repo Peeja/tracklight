@@ -1,3 +1,8 @@
+.panel {
+  width: 500px;
+  vertical-align: top;
+}
+
 .list {
   cursor: move;
   background-color: #fffc65;
