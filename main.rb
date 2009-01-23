@@ -106,7 +106,7 @@ end
 
 get '/tickets' do
   page = params[:page] || 1
-  tickets = Lighthouse::Ticket.find(:all, :params => { :_token => token, :project_id => options.project_id, :q => "responsible:me", :page => page })
+  tickets = Lighthouse::Ticket.find(:all, :params => { :_token => token, :project_id => options.project_id, :q => "sort:number", :page => page })
   tickets.map {|t| ticket_details(t) }.to_json
 end
 
