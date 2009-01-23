@@ -48,9 +48,13 @@ helpers do
   ## Sessions
   
   def login(token)
-    user = Lighthouse::Token.find(token, :params => { :_token => token }).user(:_token => token)
-    session[:token] = token
-    session[:user_name] = user.name
+    begin
+      user = Lighthouse::Token.find(token, :params => { :_token => token }).user(:_token => token)
+      session[:token] = token
+      session[:user_name] = user.name
+    rescue ActiveResource::UnauthorizedAccess
+      redirect '/login'
+    end
   end
   
   def logout
