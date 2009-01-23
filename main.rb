@@ -48,11 +48,14 @@ helpers do
   ## Sessions
   
   def login(token)
+    user = Lighthouse::Token.find(token, :params => { :_token => token }).user(:_token => token)
     session[:token] = token
+    session[:user_name] = user.name
   end
   
   def logout
     session[:token] = nil
+    session[:user_name] = nil
   end
   
   def logged_in?
@@ -61,6 +64,10 @@ helpers do
   
   def token
     session[:token]
+  end
+  
+  def user_name
+    session[:user_name]
   end
 end
 
