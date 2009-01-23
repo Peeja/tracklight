@@ -2,20 +2,29 @@ require 'rubygems'
 require 'sinatra'
 require 'lighthouse'
 
-Lighthouse.account = 'dropio'
-Lighthouse.token = '85d698469180f0c1b0bd9ba45a79b36b5f38e736'
-PROJECT_ID = 4623 unless defined?(PROJECT_ID)
-TICKET_LISTS_FILE = File.dirname(__FILE__) + "/data/ticket_order.yml" unless defined?(TICKET_LISTS_FILE)
+configure do
+  Sinatra::Default.set :ticket_lists_file, "data/ticket_order.yml"
+  
+  load File.dirname(__FILE__) + "/config/environment.rb"
+  
+  # Required options
+  [:account, :token, :project_id].each do |option|
+    Sinatra::Application.send(option) rescue raise("Required option not set: #{option}")
+  end
+  
+  Lighthouse.account = Sinatra::Application.account
+  Lighthouse.token = Sinatra::Application.token
+end
 
 helpers do
   def load_lists
-    lists = YAML.load_file(TICKET_LISTS_FILE) rescue {}
+    lists = YAML.load_file(options.ticket_lists_file) rescue {}
     lists = {} unless lists.is_a? Hash
     lists
   end
   
   def write_lists(lists)
-    File.open(TICKET_LISTS_FILE, 'w') do |file|
+    File.open(options.ticket_lists_file, 'w') do |file|
       file.write lists.to_yaml
     end
   end
@@ -25,7 +34,7 @@ helpers do
   end
   
   def ticket_url(ticket)
-    "http://#{Lighthouse.account}.lighthouseapp.com/projects/#{PROJECT_ID}/tickets/#{ticket.id}-#{ticket.permalink}"
+    "http://#{options.account}.lighthouseapp.com/projects/#{options.project_id}/tickets/#{ticket.id}-#{ticket.permalink}"
   end
   
   def ticket_details(ticket)
@@ -37,12 +46,12 @@ end
 
 get '/tickets' do
   page = params[:page] || 1
-  tickets = Lighthouse::Ticket.find(:all, :params => { :project_id => PROJECT_ID, :q => "responsible:me", :page => page })
+  tickets = Lighthouse::Ticket.find(:all, :params => { :project_id => options.project_id, :q => "responsible:me", :page => page })
   tickets.map {|t| ticket_details(t) }.to_json
 end
 
 get '/tickets/:id' do
-  ticket_details(Lighthouse::Ticket.find(params[:id], :params => { :project_id => PROJECT_ID})).to_json
+  ticket_details(Lighthouse::Ticket.find(params[:id], :params => { :project_id => options.project_id})).to_json
 end
 
 get '/lists' do
