@@ -83,7 +83,7 @@ get '/' do
 end
 
 get '/login' do
-  erb :login
+  erb :login, :locals => { :account => options.account }
 end
 
 post '/login' do
