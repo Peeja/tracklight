@@ -59,5 +59,7 @@ get '/lists' do
 end
 
 post '/lists/:list' do
-  write_list params[:list], [params["ticket[]"]].flatten.compact.map { |tid| tid.to_i }
+  # ticket_param will be a single ticket id, not a one-element array, if only one is given.
+  ticket_param = params["ticket[]"] || params["ticket"]  # Handle different versions of Sinatra/Rack
+  write_list params[:list], [ticket_param].flatten.compact.map { |tid| tid.to_i }
 end
