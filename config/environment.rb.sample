@@ -1,3 +1,2 @@
 set :account, 'activereload'
-set :token, '9ea13d384f439edc6694777e3fe05ab96a965193'
 set :project_id, 5

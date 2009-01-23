@@ -8,12 +8,13 @@ configure do
   load File.dirname(__FILE__) + "/config/environment.rb"
   
   # Required options
-  [:account, :token, :project_id].each do |option|
+  [:account, :project_id].each do |option|
     Sinatra::Application.send(option) rescue raise("Required option not set: #{option}")
   end
   
   Lighthouse.account = Sinatra::Application.account
-  Lighthouse.token = Sinatra::Application.token
+  
+  enable :sessions
 end
 
 helpers do
@@ -42,16 +43,64 @@ helpers do
       :title => ticket.title,
       :url => ticket_url(ticket) }
   end
+  
+  
+  ## Sessions
+  
+  def login(token)
+    session[:token] = token
+  end
+  
+  def logout
+    session[:token] = nil
+  end
+  
+  def logged_in?
+    not (session[:token].nil? || session[:token].empty?)
+  end
+  
+  def token
+    session[:token]
+  end
 end
+
+
+## Pages
+
+get '/' do
+  redirect '/login'
+end
+
+get '/login' do
+  erb :login
+end
+
+post '/login' do
+  login params[:token]
+  redirect '/dashboard'
+end
+
+get '/logout' do
+  logout
+  redirect '/'
+end
+
+get '/dashboard' do
+  redirect '/login' unless logged_in?
+  erb :dashboard
+end
+
+
+## Ajax Calls
 
 get '/tickets' do
   page = params[:page] || 1
-  tickets = Lighthouse::Ticket.find(:all, :params => { :project_id => options.project_id, :q => "responsible:me", :page => page })
+  tickets = Lighthouse::Ticket.find(:all, :params => { :_token => token, :project_id => options.project_id, :q => "responsible:me", :page => page })
   tickets.map {|t| ticket_details(t) }.to_json
 end
 
 get '/tickets/:id' do
-  ticket_details(Lighthouse::Ticket.find(params[:id], :params => { :project_id => options.project_id})).to_json
+  ticket_details(Lighthouse::Ticket.find(params[:id], :params => { :_token => token, :project_id => options.project_id})).to_json
 end
 
 get '/lists' do
