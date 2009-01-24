@@ -22,7 +22,7 @@ $(document).ready(function() {
   // Creates and returns a new, unloaded ticket.  Call #update to load.
   function createTicket(id) {
     return $("#ticket_template").clone()
-      .attr({id: "ticket_"+id, ticket_id: id, class: 'ticket loading'})
+      .attr({id: "ticket_"+id, ticket_id: id})
       .fn({
         // If ticket_details is not given, details will be fetched.
         update: function(ticket_details) {
@@ -31,7 +31,7 @@ $(document).ready(function() {
           function updateWithDetails(ticket_details) {
             self.removeClass('loading');
             self.find(".title").text(ticket_details.title);
-            self.find(".link").attr({href: ticket_details.url});
+            self.find(".link").attr({href: ticket_details.url}).text('#'+ticket_details.id);
             self.find(".requester").text(ticket_details.requester);
             self.find(".responsible").text(ticket_details.responsible);
             self.find(".state").text(ticket_details.state);
