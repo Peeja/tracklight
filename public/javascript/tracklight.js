@@ -21,8 +21,7 @@ $(document).ready(function() {
   
   // Creates and returns a new, unloaded ticket.  Call #update to load.
   function createTicket(id) {
-    var template = "<li><span class='title'>Loading...</span> <a class='link' href='#'>link</a></li>"
-    return $(template)
+    return $("#ticket_template").clone()
       .attr({id: "ticket_"+id, ticket_id: id, class: 'ticket loading'})
       .fn({
         // If ticket_details is not given, details will be fetched.
