@@ -39,9 +39,20 @@ helpers do
   end
   
   def ticket_details(ticket)
-    { :id => ticket.id,
+    {
+      :id => ticket.id,
+      :url => ticket_url(ticket),
       :title => ticket.title,
-      :url => ticket_url(ticket) }
+      :requester => user(ticket.creator_id).name,
+      :responsible => user(ticket.assigned_user_id).name,
+      :state => ticket.state,
+      :description => ticket.attributes['body_html'],
+      :tags => ticket.tags.join(", ")
+    }
+  end
+  
+  def user(id)
+    Lighthouse::User.find(id, :params => { :_token => token })
   end
   
   

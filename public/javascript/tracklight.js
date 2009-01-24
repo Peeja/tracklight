@@ -32,6 +32,11 @@ $(document).ready(function() {
             self.removeClass('loading');
             self.find(".title").text(ticket_details.title);
             self.find(".link").attr({href: ticket_details.url});
+            self.find(".requester").text(ticket_details.requester);
+            self.find(".responsible").text(ticket_details.responsible);
+            self.find(".state").text(ticket_details.state);
+            self.find(".description").text(ticket_details.description);
+            self.find(".tags").text(ticket_details.tags);
           }
           
           if (ticket_details != undefined)
