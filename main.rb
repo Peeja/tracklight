@@ -98,7 +98,7 @@ end
 
 get '/dashboard' do
   redirect '/login' unless logged_in?
-  erb :dashboard
+  haml :dashboard
 end
 
 
@@ -122,4 +122,12 @@ post '/lists/:list' do
   # ticket_param will be a single ticket id, not a one-element array, if only one is given.
   ticket_param = params["ticket[]"] || params["ticket"]  # Handle different versions of Sinatra/Rack
   write_list params[:list], [ticket_param].flatten.compact.map { |tid| tid.to_i }
+end
+
+
+## Stylesheet
+
+get '/stylesheets/tracklight.css' do
+  header 'Content-Type' => 'text/css; charset=utf-8'
+  sass :tracklight
 end

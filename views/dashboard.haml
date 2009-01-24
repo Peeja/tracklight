@@ -1,0 +1,31 @@
+!!!
+%html{ :lang => "en" }
+  %head
+    %meta{ :content => "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
+    %link{ :href => "stylesheets/reset.css", :rel => "stylesheet", :type => "text/css" }
+    %link{ :href => "stylesheets/tracklight.css", :rel => "stylesheet", :type => "text/css" }
+    %script{ :language => "JavaScript", :src => "/javascript/jquery-1.3.js" }
+    %script{ :language => "JavaScript", :src => "/javascript/jquery.ui-1.6rc5.js" }
+    %script{ :language => "JavaScript", :src => "/javascript/jquery.fn.js" }
+    %script{ :language => "JavaScript", :src => "/javascript/jquery.oror.js" }
+    %script{ :language => "JavaScript", :src => "/javascript/tracklight.js" }
+    %title
+      Tracklight
+  %body
+    #header
+      #header_content
+        #logo Tracklight
+        #welcome== Welcome, #{user_name}
+        %a{ :href => "/logout" } Sign out
+    #main
+      %table
+        %tbody
+          %tr
+            %td#queue_panel.panel
+              %h1
+                Queue
+              %ul#queue.list
+            %td#icebox_panel.panel
+              %h1
+                Icebox
+              %ul#icebox.list
