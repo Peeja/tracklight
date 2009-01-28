@@ -1,6 +1,11 @@
+$: << File.dirname(__FILE__) + "/lib"
+
 require 'rubygems'
 require 'sinatra'
 require 'lighthouse'
+require 'flash'
+
+use Flash
 
 configure do
   Sinatra::Default.set :ticket_lists_file, "data/ticket_order.yml"
@@ -18,6 +23,10 @@ configure do
 end
 
 helpers do
+  def flash
+    session[:flash]
+  end
+  
   def load_lists
     lists = YAML.load_file(options.ticket_lists_file) rescue {}
     lists = {} unless lists.is_a? Hash
@@ -51,8 +60,9 @@ helpers do
     }
   end
   
-  def user(id)
-    Lighthouse::User.find(id, :params => { :_token => token })
+  def user(id, the_token=token)
+    p [id, the_token]
+    Lighthouse::User.find(id, :params => { :_token => the_token })
   end
   
   
@@ -60,10 +70,12 @@ helpers do
   
   def login(token)
     begin
-      user = Lighthouse::Token.find(token, :params => { :_token => token }).user(:_token => token)
+      token_object = Lighthouse::Token.find(token, :params => { :_token => token })
+      user = user(token_object.user_id, token)
       session[:token] = token
       session[:user_name] = user.name
     rescue ActiveResource::UnauthorizedAccess
+      flash[:error] = "That token wasn't accepted for the account #{options.account}"
       redirect '/login'
     end
   end
@@ -94,7 +106,7 @@ get '/' do
 end
 
 get '/login' do
-  erb :login, :locals => { :account => options.account }
+  haml :login, :locals => { :account => options.account }
 end
 
 post '/login' do

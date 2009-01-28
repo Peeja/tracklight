@@ -1,0 +1,16 @@
+!!!
+%html{ :lang => "en" }
+  %head
+    %meta{ :content => "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
+    %title
+      Tracklight - Log In
+  %body
+    - if flash[:error]
+      #error= flash[:error]
+    %form{ :method => "post", :action => "/login" }
+      %p== Enter your token for http://#{account}.lighthouseapp.com/
+      %label{ :for => "token" }
+        Token:
+      %input#token{ :name => "token", :value => "", :type => "text" }
+      %button{ :type => "submit" }
+        Log in
