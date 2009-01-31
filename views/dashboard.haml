@@ -31,21 +31,23 @@
               %ul#icebox.list
     #templates
       %li#ticket_template.ticket.loading
-        %a.link{ :href => '#' } link
         .disclosure
-        %span.title Loading...
-        .requester_box
-          Requester:
-          %span.requester
-        .responsible_box
-          Responsible:
-          %span.responsible
-        .state_box
-          State:
-          %span.state
-        .description_box
-          Description:
-          %span.description
-        .tags_box
-          Tags:
-          %span.tags
+        .info
+          %a.link{ :href => '#' } link
+          %span.title Loading...
+          .details
+            .requester_box
+              Requester:
+              %span.requester
+            .responsible_box
+              Responsible:
+              %span.responsible
+            .state_box
+              State:
+              %span.state
+            .description_box
+              Description:
+              %span.description
+            .tags_box
+              Tags:
+              %span.tags
