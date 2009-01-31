@@ -74,9 +74,15 @@ $(document).ready(function() {
     }
   }).sortable({
       connectWith: [".list"],
+      cancel: ".disclosure",
       update: function(e, ui) {
         $(this).fn('save');
       }
+  });
+  
+  $(".disclosure").live("click", function() {
+    var shouldClose = $(this).hasClass("open");
+    $(this).parent().find(".details").toggle(!shouldClose).end().end().toggleClass("open", !shouldClose);
   });
   
   // Fetch lists
