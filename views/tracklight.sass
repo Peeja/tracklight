@@ -44,9 +44,17 @@
         :margin 5px
         :padding 5px
         :background-color #efeb3f
+        .title
+          :font-weight bold
         .link
           :display block
           :float right
+        .disclosure
+          :width 16px
+          :height 16px
+          :background-image url(/images/disclosure-closed.png)
+          &.open
+            :background-image url(/images/disclosure-open.png)
         
         &.loading
           .title
