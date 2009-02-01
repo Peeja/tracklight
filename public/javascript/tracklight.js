@@ -21,7 +21,7 @@ $(document).ready(function() {
   
   // Creates and returns a new, unloaded ticket.  Call #update to load.
   function createTicket(id) {
-    return $("#ticket_template").clone()
+    return $("#ticket_template").clone(true)
       .attr({id: "ticket_"+id, ticket_id: id})
       .fn({
         // If ticket_details is not given, details will be fetched.
@@ -80,7 +80,7 @@ $(document).ready(function() {
       }
   });
   
-  $(".disclosure").live("click", function() {
+  $(".disclosure").click(function() {
     var shouldClose = $(this).hasClass("open");
     $(this).parent().find(".details").toggle(!shouldClose).end().end().toggleClass("open", !shouldClose);
   });
