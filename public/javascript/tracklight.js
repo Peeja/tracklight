@@ -6,6 +6,7 @@ $(document).ready(function() {
       $.getJSON("/tickets?page="+page, function(data) {
         // Add the tickets to the Icebox.
         $.each(data, function(i, ticket_details) {
+          $("#icebox").append("<li class='ticket-marker' id='ticket_"+ticket_details.id+"_marker' />");
           $("#ticket_"+ticket_details.id).oror(function() {
             return createTicket(ticket_details.id).appendTo($("#icebox"));
           }).fn('update', ticket_details);
@@ -75,8 +76,14 @@ $(document).ready(function() {
   }).sortable({
       connectWith: [".list"],
       cancel: ".disclosure",
+      change: function(e, ui) {
+        if (ui.placeholder.parent().is("#icebox")) {
+          var id = ui.item.attr("id");
+          ui.placeholder.insertAfter("#"+id+"_marker");
+        }
+      },
       update: function(e, ui) {
-        $(this).fn('save');
+        $(this).not("#icebox").fn('save');
       }
   });
   
