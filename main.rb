@@ -4,10 +4,14 @@ require 'rubygems'
 require 'sinatra'
 require 'lighthouse'
 require 'flash'
+require 'andand'
 
 use Flash
 
 configure do
+  ActiveResource::Base.logger = Logger.new(STDOUT)
+  ActiveResource::Base.logger.level = Logger::WARN
+  
   Sinatra::Default.set :ticket_lists_file, "data/ticket_order.yml"
   
   load File.dirname(__FILE__) + "/config/environment.rb"
@@ -52,8 +56,8 @@ helpers do
       :id => ticket.id,
       :url => ticket_url(ticket),
       :title => ticket.title,
-      :requester => user(ticket.creator_id).name,
-      :responsible => user(ticket.assigned_user_id).name,
+      :requester => ticket.creator_id.andand { |id| user(id).name },
+      :responsible => ticket.assigned_user_id.andand { |id| user(id).name },
       :state => ticket.state,
       :description => ticket.attributes['body_html'],
       :tags => ticket.tags.join(", ")
@@ -61,7 +65,7 @@ helpers do
   end
   
   def user(id, the_token=token)
-    p [id, the_token]
+    raise ArgumentError, "Can't look up user with nil id" if id.nil?
     Lighthouse::User.find(id, :params => { :_token => the_token })
   end
   
