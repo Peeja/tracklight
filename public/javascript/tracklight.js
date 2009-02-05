@@ -50,7 +50,19 @@ $(document).ready(function() {
       });
   }
   
-  $(".list").fn({
+  $(".list").sortable({
+      connectWith: [".list"],
+      cancel: ".disclosure",
+      change: function(e, ui) {
+        if (ui.placeholder.parent().is("#icebox")) {
+          var id = ui.item.attr("id");
+          ui.placeholder.insertAfter("#"+id+"_marker");
+        }
+      },
+      update: function(e, ui) {
+        $(this).not("#icebox").fn('save');
+      }
+  }).not("#icebox").fn({
     // Moves and creates tickets to match the given list of ticket ids.
     // After update, the list has exactly those tickets whose ids are given,
     // and in the given order.
@@ -73,18 +85,6 @@ $(document).ready(function() {
       var ticket_ids = $(this).sortable("serialize")
       $.post('/lists/'+$(this).attr('id'), ticket_ids);
     }
-  }).sortable({
-      connectWith: [".list"],
-      cancel: ".disclosure",
-      change: function(e, ui) {
-        if (ui.placeholder.parent().is("#icebox")) {
-          var id = ui.item.attr("id");
-          ui.placeholder.insertAfter("#"+id+"_marker");
-        }
-      },
-      update: function(e, ui) {
-        $(this).not("#icebox").fn('save');
-      }
   });
   
   $(".disclosure").click(function() {
