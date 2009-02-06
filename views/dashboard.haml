@@ -18,25 +18,29 @@
         #welcome== Welcome, #{user_name}
         %a{ :href => "/logout" } Sign out
     #main
-      %table
+      %table#panels
         %tbody
           %tr
             %td#queue_panel.panel
-              %h1
-                Queue
-              %ul#queue.list
+              %div
+                .panel_header
+                  %h1
+                    Queue
+                %ul#queue.list
             %td#icebox_panel.panel
-              .page_controls
-                %a.previous_page{ :href => '#' } ◀
-                %a.next_page{ :href => '#' } ▶
-              %h1
-                Icebox
-              %ul#icebox.list
+              %div
+                .panel_header
+                  .page_controls
+                    %a.previous_page{ :href => '#' } ◀
+                    %a.next_page{ :href => '#' } ▶
+                  %h1
+                    Icebox
+                %ul#icebox.list
     #templates
       %li#ticket_template.ticket.loading
         .disclosure
         .info
-          %a.link{ :href => '#' } link
+          %a.link{ :href => '#', :target => '_blank' } link
           %span.title Loading...
           .details
             .requester_box
