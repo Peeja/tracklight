@@ -9,6 +9,8 @@ require 'andand'
 use Flash
 
 configure do
+  USERS = {}
+  
   ActiveResource::Base.logger = Logger.new(STDOUT)
   ActiveResource::Base.logger.level = Logger::WARN
   
@@ -66,7 +68,7 @@ helpers do
   
   def user(id, the_token=token)
     raise ArgumentError, "Can't look up user with nil id" if id.nil?
-    Lighthouse::User.find(id, :params => { :_token => the_token })
+    USERS[id] ||= Lighthouse::User.find(id, :params => { :_token => the_token })
   end
   
   
