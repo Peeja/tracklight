@@ -51,6 +51,8 @@ $(document).ready(function() {
   }
   
   $(".list").sortable({
+      appendTo: "#main",
+      helper: "clone",
       connectWith: [".list"],
       cancel: ".disclosure",
       change: function(e, ui) {
