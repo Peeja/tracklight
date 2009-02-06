@@ -145,6 +145,12 @@ get '/lists' do
   load_lists.to_json
 end
 
+get '/lists/:list' do
+  lists = load_lists
+  throw :halt, [404, "Not found"] unless lists.key? params[:list]
+  load_lists[params[:list]].to_json
+end
+
 post '/lists/:list' do
   throw :halt, [404, "Not found"] if params[:list] == "icebox"
   # ticket_param will be a single ticket id, not a one-element array, if only one is given.

@@ -65,23 +65,30 @@ $(document).ready(function() {
         $(this).not("#icebox").fn('save');
       }
   }).not("#icebox").fn({
-    // Moves and creates tickets to match the given list of ticket ids.
-    // After update, the list has exactly those tickets whose ids are given,
-    // and in the given order.
     update: function(ticket_ids) {
       var self = $(this);
-      $.each(ticket_ids, function(i, id) {
-        // Find or create ticket by id.
-        var ticket = $("#ticket_"+id).oror(function() {
-          return createTicket(id);
-        });
+      // Moves and creates tickets to match the given list of ticket ids.
+      // After update, the list has exactly those tickets whose ids are given,
+      // and in the given order.
+      function updateWithTicketIds(ticket_ids) {
+        $.each(ticket_ids, function(i, id) {
+          // Find or create ticket by id.
+          var ticket = $("#ticket_"+id).oror(function() {
+            return createTicket(id);
+          });
         
-        // Insert in the correct place.
-        if (i == 0) { ticket.prependTo(self); }
-        else        { ticket.insertAfter(self.find(".ticket:eq("+(i-1)+")")[0]); }
-      });
-      // Remove any extra tickets.
-      self.find(".ticket:gt("+(ticket_ids.length-1)+")").remove();
+          // Insert in the correct place.
+          if (i == 0) { ticket.prependTo(self); }
+          else        { ticket.insertAfter(self.find(".ticket:eq("+(i-1)+")")[0]); }
+        });
+        // Remove any extra tickets.
+        self.find(".ticket:gt("+(ticket_ids.length-1)+")").remove();
+      }
+      
+      if (ticket_ids != undefined)
+        updateWithTicketIds(ticket_ids);
+      else
+        $.getJSON("/lists/"+self.attr("id"), updateWithTicketIds);
     },
     save: function() {
       var ticket_ids = $(this).sortable("serialize")
@@ -94,13 +101,7 @@ $(document).ready(function() {
     $(this).parent().find(".details").toggle(!shouldClose).end().end().toggleClass("open", !shouldClose);
   });
   
-  // Fetch lists
-  $.getJSON("/lists", function(lists) {
-    // Fetch tickets for lists
-    $.each(lists, function(list, ticket_ids) {
-      $("#"+list).fn('update', ticket_ids);
-    })
-  })
+  $(".list").not("#icebox").fn("update");
   
   // Fetch all tickets and add extras to Icebox
   fetchTickets();
