@@ -37,7 +37,13 @@ $(document).ready(function() {
       change: function(e, ui) {
         if (ui.placeholder.parent().is("#icebox")) {
           var id = ui.item.attr("id");
-          ui.placeholder.insertAfter("#"+id+"_marker");
+          var marker = $("#"+id+"_marker");
+          
+          if (marker.length > 0)
+            ui.placeholder.insertAfter(marker);
+          else {
+            ui.placeholder.appendTo("<div></div>");
+          }
         }
       },
       update: function(e, ui) {
