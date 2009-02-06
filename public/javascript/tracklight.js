@@ -1,25 +1,4 @@
 $(document).ready(function() {
-  // Fetches all tickets, page by page.  Updates tickets already
-  // in the DOM and adds new tickets to the Icebox.
-  function fetchTickets(page) {
-    function fetchTicketsFromPage(page) {
-      $.getJSON("/tickets?page="+page, function(data) {
-        // Add the tickets to the Icebox.
-        $.each(data, function(i, ticket_details) {
-          $("#icebox").append("<li class='ticket-marker' id='ticket_"+ticket_details.id+"_marker' />");
-          $("#ticket_"+ticket_details.id).oror(function() {
-            return createTicket(ticket_details.id).appendTo($("#icebox"));
-          }).fn('update', ticket_details);
-        });
-
-        // Fetch more.
-        if (data.length > 0) fetchTicketsFromPage(page+1);
-      });
-    }
-    
-    fetchTicketsFromPage(1);
-  }
-  
   // Creates and returns a new, unloaded ticket.  Call #update to load.
   function createTicket(id) {
     return $("#ticket_template").clone(true)
@@ -96,13 +75,32 @@ $(document).ready(function() {
     }
   });
   
+  $("#icebox").fn({
+    page: function(page_num) {
+      if (page_num == undefined)
+        return $(this).data("page_num") || 1;
+      else
+        $(this).data("page_num", page_num);
+    },
+    update: function() {
+      var self = $(this);
+      self.empty();
+      $.getJSON("/tickets?page="+self.fn("page"), function(data) {
+        // Add the tickets to the Icebox.
+        $.each(data, function(i, ticket_details) {
+          $("#icebox").append("<li class='ticket-marker' id='ticket_"+ticket_details.id+"_marker' />");
+          $("#ticket_"+ticket_details.id).oror(function() {
+            return createTicket(ticket_details.id).appendTo($("#icebox"));
+          }).fn('update', ticket_details);
+        });
+      });
+    }
+  });
+  
   $(".disclosure").click(function() {
     var shouldClose = $(this).hasClass("open");
     $(this).parent().find(".details").toggle(!shouldClose).end().end().toggleClass("open", !shouldClose);
   });
   
-  $(".list").not("#icebox").fn("update");
-  
-  // Fetch all tickets and add extras to Icebox
-  fetchTickets();
+  $(".list").fn("update");
 });
