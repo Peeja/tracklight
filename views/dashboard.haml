@@ -31,8 +31,9 @@
               %div
                 .panel_header
                   .page_controls
-                    %a.previous_page{ :href => '#' } ◀
-                    %a.next_page{ :href => '#' } ▶
+                    %a#previous_page{ :href => '#' } ◀
+                    %span#page_num
+                    %a#next_page{ :href => '#' } ▶
                   %h1
                     Icebox
                 %ul#icebox.list

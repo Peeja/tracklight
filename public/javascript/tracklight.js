@@ -75,11 +75,19 @@ $(document).ready(function() {
     }
   });
   
+  var iceboxPageRequest = null;
+  
   $("#icebox").fn({
     update: function() {
       var self = $(this);
-      $.getJSON("/tickets?page="+self.fn("page"), function(data) {
+      var page = self.fn("page");
+      $("#page_num").text(page);
+      
+      if (iceboxPageRequest) iceboxPageRequest.abort();
+      
+      iceboxPageRequest = $.getJSON("/tickets?page="+page, function(data) {
         self.empty();
+        
         // Add the tickets to the Icebox.
         $.each(data, function(i, ticket_details) {
           $("#icebox").append("<li class='ticket-marker' id='ticket_"+ticket_details.id+"_marker' />");
@@ -97,8 +105,8 @@ $(document).ready(function() {
     },
   });
   
-  $(".previous_page").click(function() { $("#icebox").fn('page', $("#icebox").fn('page')-1); });
-  $(".next_page").click(function()     { $("#icebox").fn('page', $("#icebox").fn('page')+1); });
+  $("#previous_page").click(function() { $("#icebox").fn('page', $("#icebox").fn('page')-1); });
+  $("#next_page").click(function()     { $("#icebox").fn('page', $("#icebox").fn('page')+1); });
   
   $(".disclosure").click(function() {
     var shouldClose = $(this).hasClass("open");
