@@ -1,6 +1,7 @@
 $(document).ready(function() {
-  // Creates and returns a new, unloaded ticket.  Call #update to load.
-  function createTicket(id) {
+  // Creates and returns a new ticket.  If details are
+  // missing, they are loaded via AJAX.
+  function createTicket(id, details) {
     return $("#ticket_template").clone(true)
       .attr({id: "ticket_"+id, ticket_id: id})
       .fn({
@@ -26,7 +27,7 @@ $(document).ready(function() {
           
           return self;
         }
-      });
+      }).fn('update', details);
   }
   
   $(".list").sortable({
@@ -98,8 +99,8 @@ $(document).ready(function() {
         $.each(data, function(i, ticket_details) {
           $("#icebox").append("<li class='ticket-marker' id='ticket_"+ticket_details.id+"_marker' />");
           $("#ticket_"+ticket_details.id).oror(function() {
-            return createTicket(ticket_details.id).appendTo($("#icebox"));
-          }).fn('update', ticket_details);
+            return createTicket(ticket_details.id, ticket_details).appendTo($("#icebox"));
+          });
         });
       });
     },
@@ -119,5 +120,5 @@ $(document).ready(function() {
     $(this).parent().find(".details").toggle(!shouldClose).end().end().toggleClass("open", !shouldClose);
   });
   
-  $(".list").fn("update");
+  $(".list").fn('update');
 });
