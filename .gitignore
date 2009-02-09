@@ -1,2 +1,2 @@
 config/environment.rb
-data/*
+data/ticket_order.yml
