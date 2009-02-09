@@ -8,6 +8,12 @@ require 'andand'
 
 use Flash
 
+configure :production do
+  # Use drop.io as a default until we can set these in production properly.
+  Sinatra::Default.set :account, "dropio"
+  Sinatra::Default.set :project_id, 8242
+end
+
 configure do
   USERS = {}
   
@@ -16,7 +22,8 @@ configure do
   
   Sinatra::Default.set :ticket_lists_file, "data/ticket_order.yml"
   
-  load File.dirname(__FILE__) + "/config/environment.rb"
+  env_file = File.dirname(__FILE__) + "/config/environment.rb"
+  load env_file if File.exist? env_file
   
   # Required options
   [:account, :project_id].each do |option|
