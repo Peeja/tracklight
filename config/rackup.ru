@@ -9,6 +9,7 @@ $LOAD_PATH << app_root+'/vendor/haml-2.0.7/lib'
 
 set :environment, :production
 set :public, app_root + '/public'
+set :views,  app_root + '/views'
 
 disable :run, :reload
 
