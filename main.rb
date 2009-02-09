@@ -40,6 +40,11 @@ helpers do
     session[:flash]
   end
   
+  # "Alfred E. Newman" => "AEN"
+  def initials(name)
+    name.split(/\s+/).map { |part| part[0,1] }.join.upcase
+  end
+  
   def load_lists
     lists = YAML.load_file(options.ticket_lists_file) rescue {}
     lists = {} unless lists.is_a? Hash
@@ -67,6 +72,7 @@ helpers do
       :title => ticket.title,
       :requester => ticket.creator_id.andand { |id| user(id).name },
       :responsible => ticket.assigned_user_id.andand { |id| user(id).name },
+      :responsible_initials => ticket.assigned_user_id.andand { |id| initials(user(id).name) },
       :state => ticket.state,
       :description => ticket.attributes['body_html'],
       :tags => ticket.tags.join(", ")

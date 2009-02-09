@@ -18,6 +18,10 @@ $(document).ready(function() {
             self.find(".state").text(ticket_details.state);
             self.find(".description").text(ticket_details.description);
             self.find(".tags").text(ticket_details.tags);
+            
+            var initials = ticket_details.responsible_initials ?
+                             "("+ticket_details.responsible_initials+")" : ""
+            self.find(".responsible_initials").text(initials);
           }
           
           if (ticket_details != undefined)
