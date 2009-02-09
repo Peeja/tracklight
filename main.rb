@@ -177,6 +177,6 @@ end
 ## Stylesheet
 
 get '/stylesheets/tracklight.css' do
-  header 'Content-Type' => 'text/css; charset=utf-8'
+  response['Content-Type'] = 'text/css; charset=utf-8'
   sass :tracklight
 end
