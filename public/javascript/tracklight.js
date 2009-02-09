@@ -120,8 +120,7 @@ $(document).ready(function() {
   $("#next_page").click(function()     { $("#icebox").fn('page', $("#icebox").fn('page')+1); });
   
   $(".disclosure").click(function() {
-    var shouldClose = $(this).hasClass("open");
-    $(this).parent().find(".details").toggle(!shouldClose).end().end().toggleClass("open", !shouldClose);
+    $(this).parent().toggleClass("closed");
   });
   
   $(".list").fn('update');

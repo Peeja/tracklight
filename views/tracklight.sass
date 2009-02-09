@@ -84,9 +84,7 @@
     :float left
     :width 16px
     :height 16px
-    :background-image url(/images/disclosure-closed.png)
-    &.open
-      :background-image url(/images/disclosure-open.png)
+    :background-image url(/images/disclosure-open.png)
   .info
     :padding-left 20px
     .title
@@ -96,6 +94,10 @@
     .link
       :display block
       :float right
+  
+  &.closed
+    .disclosure
+      :background-image url(/images/disclosure-closed.png)
     .details
       :display none
   
